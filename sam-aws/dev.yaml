@@ -1,0 +1,174 @@
+# Serverless Infrastucture
+# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Configure a Development Serverless Infrastructure in AWS
+
+Parameters:
+  StageName:
+    Type: String
+    Description: API Stage name
+    Default: dev
+  DevCognitoUserPoolName:
+    Type: String
+    Description: User pool name
+    Default: dev
+  ClientDevCognitoUserPoolName:
+    Type: String
+    Description: Client user pool name
+    Default: client_dev
+
+# Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+  # LogicalID
+  ApiGatewayDevApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub finance-api-${StageName}
+      Description: "Define a API Gateway to Development env"
+      StageName: !Ref StageName
+      # Cors only works to inline functions
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token,filter'"
+        AllowOrigin: "'*'"
+        MaxAge: "'5'"
+        AllowCredentials: false
+      # Auth:
+      #   DefaultAuthorizer: DevCognitoAuthorizer
+      #   Authorizers:
+      #     DevCognitoAuthorizer:
+      #       UserPoolArn: !GetAtt DevCognitoUserPool.Arn
+
+  HelloDevLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.7
+      Handler: index.handler
+      InlineCode: |
+        def handler(event, context):
+            return {'body': 'I am here!', 'statusCode': 200}
+      Events:
+        HelloDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /status
+            Method: GET
+
+  DataRecordDevDynamoDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub finance-table-${StageName}-record
+      AttributeDefinitions: 
+        - 
+          AttributeName: "total"
+          AttributeType: "S"
+        - 
+          AttributeName: "description"
+          AttributeType: "S"
+        - 
+          AttributeName: "epoc"
+          AttributeType: "N"
+        - 
+          AttributeName: "source"
+          AttributeType: "S"
+        - 
+          AttributeName: "type"
+          AttributeType: "S"
+        - 
+          AttributeName: "category"
+          AttributeType: "S"
+        - 
+          AttributeName: "status"
+          AttributeType: "S"
+        - 
+          AttributeName: "created_by"
+          AttributeType: "S"
+        - 
+          AttributeName: "created_at"
+          AttributeType: "S"
+        - 
+          AttributeName: "updated_at"
+          AttributeType: "S"
+        - 
+          AttributeName: "updated_by"
+          AttributeType: "S"
+        - 
+          AttributeName: "type_yyyy"
+          AttributeType: "S"
+        - 
+          AttributeName: "yyyymmepoc"
+          AttributeType: "N"
+      KeySchema: 
+        - 
+          AttributeName: "type_yyyy"
+          KeyType: "HASH"
+        - 
+          AttributeName: "yyyymmepoc"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+
+  ServerlessDevLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./node-js
+      Handler: ./src/serverless.handler
+      MemorySize: 1024
+      Runtime: nodejs16.x
+      Timeout: 30
+      Events:
+        ServerProxyListGetDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /list/{proxy+}
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataRecordDevDynamoDb
+      Environment:
+        Variables:
+          ENV: "development"
+          TABLE_NAME: !Sub finance-table-${StageName}
+          CLIENT_ID: !Ref ClientDevCognitoUserPool
+          USER_POOL_ID: !Ref DevCognitoUserPool
+
+  DevCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref DevCognitoUserPoolName
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+        - AttributeDataType: String
+          Name: manager
+          Mutable: true
+        - AttributeDataType: String
+          Name: viewer
+          Mutable: true
+        - AttributeDataType: String
+          Name: creator
+          Mutable: true
+
+  ClientDevCognitoUserPool:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref DevCognitoUserPool
+      ClientName: !Ref ClientDevCognitoUserPoolName
+      GenerateSecret: false
+
+Outputs:
+  ApiUrl:
+    Description:
+      Invoke URL for your API. Clicking this link will perform a GET request
+      on the root resource of your API.
+    Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
