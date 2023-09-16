@@ -63,7 +63,7 @@ Resources:
       AttributeDefinitions: 
         - 
           AttributeName: "total"
-          AttributeType: "S"
+          AttributeType: "N"
         - 
           AttributeName: "description"
           AttributeType: "S"
