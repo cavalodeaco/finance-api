@@ -30,7 +30,7 @@ jobs:
           aws-region: sa-east-1
       # sam build (base dir is used to build the container and defines the relative path)
       - run: sam build --use-container 
-                        --template ./sam-aws/dev.yml
+                        --template ./sam-aws/dev.yaml
                         --base-dir ./
                         --region sa-east-1
                         --debug
