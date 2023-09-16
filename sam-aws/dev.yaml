@@ -61,39 +61,39 @@ Resources:
     Properties:
       TableName: !Sub finance-table-${StageName}-record
       AttributeDefinitions: 
-        - 
-          AttributeName: "total"
-          AttributeType: "N"
-        - 
-          AttributeName: "description"
-          AttributeType: "S"
-        - 
-          AttributeName: "epoc"
-          AttributeType: "N"
-        - 
-          AttributeName: "source"
-          AttributeType: "S"
-        - 
-          AttributeName: "type"
-          AttributeType: "S"
-        - 
-          AttributeName: "category"
-          AttributeType: "S"
-        - 
-          AttributeName: "status"
-          AttributeType: "S"
-        - 
-          AttributeName: "created_by"
-          AttributeType: "S"
-        - 
-          AttributeName: "created_at"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_at"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_by"
-          AttributeType: "S"
+        # - 
+        #   AttributeName: "total"
+        #   AttributeType: "N"
+        # - 
+        #   AttributeName: "description"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "epoc"
+        #   AttributeType: "N"
+        # - 
+        #   AttributeName: "source"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "type"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "category"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "status"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "created_by"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "created_at"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "updated_at"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "updated_by"
+        #   AttributeType: "S"
         - 
           AttributeName: "type_yyyy"
           AttributeType: "S"
