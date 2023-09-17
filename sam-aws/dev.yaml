@@ -126,6 +126,18 @@ Resources:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /list/{proxy+}
             Method: GET
+        ServerProxyLoginPostDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /login
+            Method: POST
+        ServerProxyRecordPostDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /record
+            Method: POST
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataRecordDevDynamoDb
