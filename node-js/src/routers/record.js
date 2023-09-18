@@ -11,6 +11,12 @@ route.post(
   rescue(controller.post)
 );
 
+route.delete(
+  "/:pk/:sk",
+  rescue(requestMiddleware),
+  rescue(controller.delete)
+);
+
 route.get(
   "/:type/:year",
   rescue(requestMiddleware),
