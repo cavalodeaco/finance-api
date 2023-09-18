@@ -49,10 +49,16 @@ const CreateInputSchema = {
 };
 
 class Service {
-  async get_all() {
-    console.info("Record service:: GET ALL");
+  async all() {
+    console.info("Record service:: ALL");
     const model = new RecordModel();
-    return await model.get_all(10);
+    return await model.all(100);
+  }
+
+  async get(type, year, limit) {
+    console.info("Record service:: GET");
+    const model = new RecordModel();
+    return await model.get(type, year, 100);
   }
 
   async create_input(data) {

@@ -1,7 +1,8 @@
 const { dynamoDbDoc } = require("../libs/ddb-doc.js");
-const { PutCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
+const { PutCommand, QueryCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 const CreateError = require("http-errors");
 const validateJson = require("../libs/validate-json.js");
+const { jsDateToEpoch } = require("../libs/epoc-converter.js");
 
 const RecordOutputSchema = {
   type: "object",
@@ -63,9 +64,9 @@ const RecordInputSchema = {
   ],
   additionalProperties: true,
 };
-
+// https://docs.aws.amazon.com/pt_br/sdk-for-javascript/v3/developer-guide/dynamodb-example-dynamodb-utilities.html
 class Model {
-  async save_output (data) {
+  async save_output(data) {
     console.info("Record model :: SAVE OUTPUT");
 
     // Validate Class
@@ -117,12 +118,35 @@ class Model {
     };
     if (process.env.ENV !== "production")
       console.info("Creating new input record!");
-    await dynamoDbDoc.send(new PutCommand(params));
-    return "created";
+    const result = await dynamoDbDoc.send(new PutCommand(params));
+    return result;
   }
 
-  async get_all(limit, page) {
-    console.info("Record model:: GET ALL");
+  async get(type, year, limit, page) {
+    console.info("Record model:: GET");
+    const epoc_year = jsDateToEpoch(new Date(`${year}-01-01`)); // start date from year
+    const params = {
+      TableName: `${process.env.TABLE_NAME}-record`,
+      Limit: parseInt(limit),
+      ExclusiveStartKey: page,
+      KeyConditionExpression:
+        "type_yyyy = :type_yyyy AND yyyymmepoc >= :yyyymmepoc",
+      ExpressionAttributeValues: {
+        ":type_yyyy": `${type}_${year}`,
+        ":yyyymmepoc": Number(`${year}01${epoc_year.toString().padStart(10, "0")}`),
+      },
+      ConsistentRead: true,
+    };
+    if (page === undefined || page === 0) {
+      delete params.ExclusiveStartKey;
+    }
+    console.log(params);
+    const result = await dynamoDbDoc.send(new QueryCommand(params));
+    return { Items: result.Items, page: result.LastEvaluatedKey };
+  }
+
+  async all(limit, page) {
+    console.info("Record model:: ALL");
     const params = {
       TableName: `${process.env.TABLE_NAME}-record`,
       Limit: parseInt(limit),
@@ -132,7 +156,6 @@ class Model {
       delete params.ExclusiveStartKey;
     }
     const result = await dynamoDbDoc.send(new ScanCommand(params));
-    console.log(result);
     return { Items: result.Items, page: result.LastEvaluatedKey };
   }
 }
