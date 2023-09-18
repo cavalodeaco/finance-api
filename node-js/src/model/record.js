@@ -1,5 +1,10 @@
 const { dynamoDbDoc } = require("../libs/ddb-doc.js");
-const { PutCommand, QueryCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
+const {
+  PutCommand,
+  QueryCommand,
+  ScanCommand,
+  DeleteCommand,
+} = require("@aws-sdk/lib-dynamodb");
 const CreateError = require("http-errors");
 const validateJson = require("../libs/validate-json.js");
 const { jsDateToEpoch } = require("../libs/epoc-converter.js");
@@ -133,7 +138,9 @@ class Model {
         "type_yyyy = :type_yyyy AND yyyymmepoc >= :yyyymmepoc",
       ExpressionAttributeValues: {
         ":type_yyyy": `${type}_${year}`,
-        ":yyyymmepoc": Number(`${year}01${epoc_year.toString().padStart(10, "0")}`),
+        ":yyyymmepoc": Number(
+          `${year}01${epoc_year.toString().padStart(10, "0")}`
+        ),
       },
       ConsistentRead: true,
     };
@@ -157,6 +164,19 @@ class Model {
     }
     const result = await dynamoDbDoc.send(new ScanCommand(params));
     return { Items: result.Items, page: result.LastEvaluatedKey };
+  }
+
+  async delete(pk, sk) {
+    console.info("Record model:: DELETE");
+    const params = {
+      TableName: `${process.env.TABLE_NAME}-record`,
+      Key: {
+        type_yyyy: pk,
+        yyyymmepoc: Number(sk),
+      },
+    };
+    const result = await dynamoDbDoc.send(new DeleteCommand(params));
+    return result;
   }
 }
 

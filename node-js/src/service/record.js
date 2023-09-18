@@ -89,6 +89,12 @@ class Service {
     return await model.save_ouput(output); // created or existed
   }
 
+  async delete (pk, sk) {
+    console.info("Record controller:: DELETE");
+    const model = new RecordModel();
+    return await model.delete(pk, sk);
+  }
+
   process_keys(json, colum_date, type) {
     // insertion EPOC
     const epoc_now = jsDateToEpoch(new Date());
