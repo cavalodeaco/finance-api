@@ -10,7 +10,7 @@ const Controller = {
       const resp = await service.all();
       return res.status(200).json({ message: "success", data: resp });
     }
-    return res.status(500).json({ message: "fail all" });
+    return res.status(400).json({ message: "fail all" });
   },
   get: async (req, res, next) => {
     console.info("Record controller:: GET");
@@ -36,7 +36,7 @@ const Controller = {
       return res.status(200).json({ message: "success", data: resp });
     }
 
-    return res.status(500).json({ message: "fail post" });
+    return res.status(400).json({ message: "fail post" });
   },
   delete: async (req, res, next) => {
     console.info("Record controller:: DELETE");
@@ -45,7 +45,15 @@ const Controller = {
     const service = new Service();
     const resp = await service.delete(pk, sk);
     return res.status(200).json({ message: "success", data: resp });
-  }
+  },
+  put: async (req, res, next) => {
+    console.info("Record controller:: PUT");
+    const pk = req.params.pk;
+    const sk = req.params.sk;
+    const service = new Service();
+    const resp = await service.update(pk, sk, req.body);
+    return res.status(200).json({ message: "success", data: resp });
+  },
 };
 
 module.exports = Controller;

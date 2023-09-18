@@ -17,6 +17,12 @@ route.delete(
   rescue(controller.delete)
 );
 
+route.put(
+  "/:pk/:sk",
+  rescue(requestMiddleware),
+  rescue(controller.put)
+);
+
 route.get(
   "/:type/:year",
   rescue(requestMiddleware),
