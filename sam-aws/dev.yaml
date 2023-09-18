@@ -62,19 +62,19 @@ Resources:
       TableName: !Sub finance-table-${StageName}-record
       AttributeDefinitions: 
         # - 
-        #   AttributeName: "total"
+        #   AttributeName: "amount"
         #   AttributeType: "N"
         # - 
         #   AttributeName: "description"
         #   AttributeType: "S"
         # - 
-        #   AttributeName: "epoc"
+        #   AttributeName: "due_date"
         #   AttributeType: "N"
         # - 
-        #   AttributeName: "source"
+        #   AttributeName: "source_pay"
         #   AttributeType: "S"
         # - 
-        #   AttributeName: "type"
+        #   AttributeName: "type_pay"
         #   AttributeType: "S"
         # - 
         #   AttributeName: "category"
@@ -120,18 +120,18 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        ServerProxyListGetDevEvent:
-          Type: Api
-          Properties:
-            RestApiId: !Ref ApiGatewayDevApi
-            Path: /list/{proxy+}
-            Method: GET
         ServerProxyLoginPostDevEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /login
             Method: POST
+        ServerProxyRecordGetDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /record/{proxy+}
+            Method: GET
         ServerProxyRecordPostDevEvent:
           Type: Api
           Properties:
