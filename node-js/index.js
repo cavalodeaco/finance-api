@@ -2,7 +2,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = require("./src/api/app.js");
-const swaggerDocs = require("./src/utils/swagger.js");
 
 // Create table if not exists
 const { dynamoDbClient } = require("./src/libs/ddb-client.js");
@@ -92,7 +91,13 @@ dynamoDbClient
       throw err;
     }
   });
+
+// docs
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("./swagger-output.json");
+
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 app.listen(3001, () => {
   console.info("I hear you, on http://localhost:3001");
-  swaggerDocs(app, 3001);
 });

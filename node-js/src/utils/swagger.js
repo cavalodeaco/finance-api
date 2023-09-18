@@ -1,7 +1,6 @@
 const express = require("express");
-const swaggerJsDoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
 const { version } = require("../../package.json");
+const swaggerAutogen = require('swagger-autogen');
 
 const options = {
   definition: {
@@ -28,15 +27,9 @@ const options = {
   apis: ['../api/app.js', '../routers/record.js']
 };
 
-const swaggerSpec = swaggerJsDoc(options);
+const outputFile = '../../swagger-output.json'
+const endpointsFiles = ['../../index.js']
 
-function swaggerDocs (app) {
-    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-    app.get('docs.json', (req, res) => {
-        res.setHeader("Content-Type", "application/json");
-        res.send(swaggerSpec);
-    });
-}
-
-module.exports = swaggerDocs;
+swaggerAutogen(outputFile, endpointsFiles, options).then(() => {
+    require('../../index')           // Your project's root file
+})
