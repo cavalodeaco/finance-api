@@ -62,19 +62,19 @@ Resources:
       TableName: !Sub finance-table-${StageName}-record
       AttributeDefinitions: 
         # - 
-        #   AttributeName: "total"
+        #   AttributeName: "amount"
         #   AttributeType: "N"
         # - 
         #   AttributeName: "description"
         #   AttributeType: "S"
         # - 
-        #   AttributeName: "epoc"
+        #   AttributeName: "due_date"
         #   AttributeType: "N"
         # - 
-        #   AttributeName: "source"
+        #   AttributeName: "source_pay"
         #   AttributeType: "S"
         # - 
-        #   AttributeName: "type"
+        #   AttributeName: "type_pay"
         #   AttributeType: "S"
         # - 
         #   AttributeName: "category"
@@ -120,12 +120,24 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        ServerProxyListGetDevEvent:
+        ServerProxyLoginPostDevEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /list/{proxy+}
+            Path: /login
+            Method: POST
+        ServerProxyRecordGetDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /record/{proxy+}
             Method: GET
+        ServerProxyRecordPostDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /record
+            Method: POST
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataRecordDevDynamoDb
