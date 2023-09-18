@@ -4,6 +4,7 @@ const {
   QueryCommand,
   ScanCommand,
   DeleteCommand,
+  UpdateCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const CreateError = require("http-errors");
 const validateJson = require("../libs/validate-json.js");
@@ -176,6 +177,38 @@ class Model {
       },
     };
     const result = await dynamoDbDoc.send(new DeleteCommand(params));
+    return result;
+  }
+
+  async update(pk, sk, data) {
+    console.info("Record model:: UPDATE");
+    const params = {
+      TableName: `${process.env.TABLE_NAME}-record`,
+      Key: {
+        type_yyyy: pk,
+        yyyymmepoc: Number(sk),
+      },
+      UpdateExpression:
+        "SET " +
+        Object.keys(data)
+          .map((key) => {
+            return `#${key} = :${key}`;
+          })
+          .join(", "),
+      ExpressionAttributeNames: Object.fromEntries(
+        Object.keys(data).map((key) => {
+          return [`#${key}`, key];
+        })
+      ),
+      ExpressionAttributeValues: Object.fromEntries(
+        // recover as object
+        Object.entries(data).map((entry) => {
+          return [`:${entry[0]}`, entry[1]];
+        }) // transform into tuples with :
+      ),
+      ReturnValues: "ALL_NEW",
+    };
+    const result = await dynamoDbDoc.send(new UpdateCommand(params));
     return result;
   }
 }

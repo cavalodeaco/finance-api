@@ -43,9 +43,23 @@ const CreateInputSchema = {
     "source_pay",
     "category",
     "in_date",
-    "status",
   ],
   additionalProperties: true,
+};
+
+const UpdateSchema = {
+  type: "object",
+  properties: {
+    amount: { type: "number" },
+    description: { type: "string" },
+    type_pay: { type: "string" },
+    source_pay: { type: "string" },
+    category: { type: "string" },
+    due_date: { type: "string" },
+    in_date: { type: "string" },
+    status: { type: "string" },
+  },
+  additionalProperties: false,
 };
 
 class Service {
@@ -89,10 +103,21 @@ class Service {
     return await model.save_ouput(output); // created or existed
   }
 
-  async delete (pk, sk) {
+  async delete(pk, sk) {
     console.info("Record controller:: DELETE");
     const model = new RecordModel();
     return await model.delete(pk, sk);
+  }
+
+  async update(pk, sk, data) {
+    console.info("Record controller:: PUT");
+    // validate json
+    validateJson(data, UpdateSchema);
+    const epoc_now = jsDateToEpoch(new Date());
+    // data['updated_by'] = ""
+    data["updated_at"] = epoc_now;
+    const model = new RecordModel();
+    return await model.update(pk, sk, data);
   }
 
   process_keys(json, colum_date, type) {
