@@ -8,7 +8,7 @@ const route = express.Router();
 route.post(
   "/",
   rescue(requestMiddleware),
-  rescue(Controller.do)
+  rescue(Controller.post)
 );
 
 module.exports = { route };

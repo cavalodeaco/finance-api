@@ -61,39 +61,39 @@ Resources:
     Properties:
       TableName: !Sub finance-table-${StageName}-record
       AttributeDefinitions: 
-        - 
-          AttributeName: "total"
-          AttributeType: "N"
-        - 
-          AttributeName: "description"
-          AttributeType: "S"
-        - 
-          AttributeName: "epoc"
-          AttributeType: "N"
-        - 
-          AttributeName: "source"
-          AttributeType: "S"
-        - 
-          AttributeName: "type"
-          AttributeType: "S"
-        - 
-          AttributeName: "category"
-          AttributeType: "S"
-        - 
-          AttributeName: "status"
-          AttributeType: "S"
-        - 
-          AttributeName: "created_by"
-          AttributeType: "S"
-        - 
-          AttributeName: "created_at"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_at"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_by"
-          AttributeType: "S"
+        # - 
+        #   AttributeName: "amount"
+        #   AttributeType: "N"
+        # - 
+        #   AttributeName: "description"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "due_date"
+        #   AttributeType: "N"
+        # - 
+        #   AttributeName: "source_pay"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "type_pay"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "category"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "status"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "created_by"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "created_at"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "updated_at"
+        #   AttributeType: "S"
+        # - 
+        #   AttributeName: "updated_by"
+        #   AttributeType: "S"
         - 
           AttributeName: "type_yyyy"
           AttributeType: "S"
@@ -120,12 +120,24 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        ServerProxyListGetDevEvent:
+        ServerProxyLoginPostDevEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /list/{proxy+}
+            Path: /login
+            Method: POST
+        ServerProxyRecordGetDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /record/{proxy+}
             Method: GET
+        ServerProxyRecordPostDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /record
+            Method: POST
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataRecordDevDynamoDb
