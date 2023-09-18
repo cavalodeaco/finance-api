@@ -1,7 +1,5 @@
 const { dynamoDbDoc } = require("../libs/ddb-doc.js");
-const {
-  PutCommand,
-} = require("@aws-sdk/lib-dynamodb");
+const { PutCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 const CreateError = require("http-errors");
 const validateJson = require("../libs/validate-json.js");
 
@@ -58,9 +56,25 @@ class Model {
         status: data.status | "nao_pago",
       },
     };
-    if (process.env.ENV !== "production") console.info("Creating new output record!");
+    if (process.env.ENV !== "production")
+      console.info("Creating new output record!");
     await dynamoDbDoc.send(new PutCommand(params));
     return "created";
+  }
+
+  async get_all(limit, page) {
+    console.info("Record model:: GET ALL");
+    const params = {
+      TableName: `${process.env.TABLE_NAME}-record`,
+      Limit: parseInt(limit),
+      ExclusiveStartKey: page,
+    };
+    if (page === undefined || page === 0) {
+      delete params.ExclusiveStartKey;
+    }
+    const result = await dynamoDbDoc.send(new ScanCommand(params));
+    console.log(result);
+    return { Items: result.Items, page: result.LastEvaluatedKey };
   }
 }
 

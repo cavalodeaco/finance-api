@@ -12,9 +12,9 @@ route.post(
 );
 
 route.get(
-  "/",
+  "/all",
   rescue(requestMiddleware),
-  rescue(controller.get)
+  rescue(controller.get_all)
 );
 
 module.exports = { route };

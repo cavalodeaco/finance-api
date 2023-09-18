@@ -26,6 +26,12 @@ const CreateOutputSchema = {
 };
 
 class Service {
+  async get_all () {
+    console.info("Record service:: GET ALL");
+    const model = new RecordModel();
+    return await model.get_all(10); 
+  }
+
   async create_output(data) {
     console.info("Record controller:: create output");
     let output = data;
