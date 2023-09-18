@@ -25,6 +25,28 @@ const CreateOutputSchema = {
   additionalProperties: true,
 };
 
+const CreateInputSchema = {
+  type: "object",
+  properties: {
+    amount: { type: "number" },
+    description: { type: "string" },
+    type_pay: { type: "string" },
+    source_pay: { type: "string" },
+    category: { type: "string" },
+    due_date: { type: "string" },
+    status: { type: "string" },
+  },
+  required: [
+    "amount",
+    "description",
+    "type_pay",
+    "source_pay",
+    "category",
+    "due_date",
+  ],
+  additionalProperties: true,
+};
+
 class Service {
   async get_all () {
     console.info("Record service:: GET ALL");
@@ -51,7 +73,7 @@ class Service {
     // insert new fields
     output["due_date"] = epoc_due;
     output["type_yyyy"] = "output_"+year;
-    output["yyyymmepoc"] = Number(`${year}${month}${epoc_now}`);
+    output["yyyymmepoc"] = Number(`${year}${month.toString().padStart(2, "0")}${epoc_now.toString().padStart(10, "0")}`);
     // output["created_by"] = "";
     output["created_at"] = epoc_now;
 
