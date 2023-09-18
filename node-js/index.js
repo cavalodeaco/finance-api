@@ -92,11 +92,6 @@ dynamoDbClient
     }
   });
 
-// docs
-const swaggerUi = require("swagger-ui-express");
-const swaggerFile = require("./swagger-output.json");
-
-app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.listen(3001, () => {
   console.info("I hear you, on http://localhost:3001");

@@ -1,0 +1,48 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "RESP API - Finance Rancheiros",
+    "version": "1.0.0",
+    "contact": { "name": "Cavalo de Aço Sistemas" }
+  },
+  "schemes": ["https"],
+  "components": {
+    "securitySchemas": {
+      "bearerAuth": {
+        "type": "http",
+        "schema": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Record": {
+        "type": "object",
+        "required": [
+          "amount",
+          "description",
+          "type_pay",
+          "category",
+          "source_pay"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount of the finance record"
+          }
+        },
+        "example": { "amount": 10 }
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/record/:type": {
+      "post": {
+        "summary": "Create a new record",
+        "tags": ["Record"],
+        "requestBody": { "required": true, "content": "application/json" }
+      }
+    }
+  },
+  "tags": [{ "name": "Record", "description": "Records of finance" }]
+}

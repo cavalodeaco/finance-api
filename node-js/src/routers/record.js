@@ -3,22 +3,42 @@ const rescue = require("express-rescue");
 const controller = require("../controllers/record.js");
 const requestMiddleware = require("../middleware/request-middleware.js");
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Record:
+ *       type: object
+ *       required:
+ *         - amount
+ *         - description
+ *         - type_pay
+ *         - category
+ *         - source_pay
+ *       properties:
+ *         amount:
+ *           type: number
+ *           description: Amount of the finance record
+ *       example:
+ *         amount: 10.00
+ */
+
 const route = express.Router();
 
 /**
  * @openapi
- * /type:
+ * tags:
+ *  name: Record
+ *  description: Records of finance
+ *
+ * /record/:type:
  *  post:
- *   tag:
- *     - record_create
- *     description: Create a new record based on :type
- *     responses:
- *       200:
- *         description: :type record create successfully
- *       500:
- *         description: internal errror
- *       400:
- *         description: bad request
+ *   summary: Create a new record
+ *   tags: [Record]
+ *   requestBody:
+ *      required: true
+ *      content:
+ *          application/json
  *
  */
 route.post("/:type", rescue(requestMiddleware), rescue(controller.post));
