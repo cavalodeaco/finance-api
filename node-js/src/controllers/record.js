@@ -16,6 +16,10 @@ const Controller = {
       // create output record
       const resp = await service.create_output(req.body);
       return res.status(200).json({ message: resp });
+    } else if (req.body.type == "input") {
+      // create output record
+      const resp = await service.create_input(req.body);
+      return res.status(200).json({ message: resp });
     }
 
     return res.status(500).json({ message: "fail post" });
