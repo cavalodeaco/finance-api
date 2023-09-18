@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
+    "create_user": "node ./src/utils/create_user.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cavalo de Aço Sistemas",
@@ -14,6 +15,7 @@
     "@aws-sdk/client-dynamodb": "^3.414.0",
     "@aws-sdk/lib-dynamodb": "^3.414.0",
     "ajv": "^8.12.0",
+    "amazon-cognito-identity-js": "^6.3.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
