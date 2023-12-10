@@ -138,6 +138,12 @@ Resources:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /record
             Method: POST
+        ServerProxySwaggerPostDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /doc
+            Method: GET
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataRecordDevDynamoDb

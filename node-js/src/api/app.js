@@ -1,8 +1,8 @@
 const cors = require("cors");
 const express = require("express");
 const bodyParser = require("body-parser");
-const { route:login } = require("../routers/login.js");
-const { route:record } = require("../routers/record.js");
+const { route: login } = require("../routers/login.js");
+const { route: record } = require("../routers/record.js");
 // const errorMiddleware = require("../middleware/error-middleware.js");
 const corsMiddleware = require("../middleware/cors-middleware.js");
 

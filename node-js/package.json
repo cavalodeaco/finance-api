@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon index.js",
     "create_user": "node ./src/utils/create_user.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "swagger": "node ./swagger.js"
   },
   "author": "Cavalo de Aço Sistemas",
   "license": "MIT",
@@ -22,6 +23,9 @@
     "express-rescue": "^1.2.0",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
-    "serverless-http": "^3.2.0"
+    "serverless-http": "^3.2.0",
+    "swagger-autogen": "^2.23.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   }
 }

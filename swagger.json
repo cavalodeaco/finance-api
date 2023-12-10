@@ -1,0 +1,90 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "RESP API - Finance Rancheiros",
+    "version": "1.0.0",
+    "contact": { "name": "Cavalo de Aço Sistemas" }
+  },
+  "schemes": ["https"],
+  "components": {
+    "securitySchemas": {
+      "bearerAuth": {
+        "type": "http",
+        "schema": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Record": {
+        "type": "object",
+        "required": [
+          "amount",
+          "description",
+          "type_pay",
+          "category",
+          "source_pay"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount of the finance record"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the finance record"
+          },
+          "type_pay": {
+            "type": "string",
+            "description": "Type of finance record like money, credit card, debit card, etc."
+          },
+          "source_pay": {
+            "type": "string",
+            "description": "Type of source like money, card 1, card 2, etc."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the finance record like home, school, vehicle, etc."
+          },
+          "due_date": {
+            "type": "date",
+            "description": "Due date to finance record. Required to finance record of type output."
+          },
+          "in_date": {
+            "type": "date",
+            "description": "Input date of finance record. Required to finance record of type input."
+          }
+        }
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/record/:type": {
+      "post": {
+        "summary": "Create a new finance record of type like input, output, status.",
+        "tags": ["Record"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Record" }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "The created finance record.",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/Record" }
+                }
+              }
+            },
+            "400": { "description": "Bad request" },
+            "500": { "description": "Some server error" }
+          }
+        }
+      }
+    }
+  },
+  "tags": [{ "name": "Record", "description": "Records of finance" }]
+}

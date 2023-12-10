@@ -91,4 +91,8 @@ dynamoDbClient
       throw err;
     }
   });
-app.listen(3001, () => console.info("I hear you, on http://localhost:3001"));
+
+
+app.listen(3001, () => {
+  console.info("I hear you, on http://localhost:3001");
+});
