@@ -8,7 +8,7 @@ const corsMiddleware = require("../middleware/cors-middleware.js");
 
 const app = express();
 app.use(bodyParser.json());
-// app.use(corsMiddleware);
+app.use(corsMiddleware);
 app.use("/login", login);
 app.use("/record", record);
 // app.use(errorMiddleware);

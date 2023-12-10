@@ -5,7 +5,7 @@ const Controller = {
   post: async (req, res, next) => {
     console.info("Login Controller :: POST");
     if (process.env.ENV === "local") {
-      return res.status(200).json({ message: process.env.TOKENS });
+      return res.status(200).json({ token: process.env.TOKENS });
     }
     const service = new Service();
     const data = await service.getToken(req.body);
